@@ -12,14 +12,24 @@
 
     <script>
         // Инициализация TonConnect SDK
-        const tonConnect = new TonConnect();
+        const tonConnect = new TonConnect({
+            manifestUrl: 'https://your-website.com/tonconnect-manifest.json' // Замените на URL вашего манифеста
+        });
 
         const connectButton = document.getElementById('connectButton');
 
         connectButton.addEventListener('click', async () => {
             try {
+                // Запрос доступных кошельков
+                const wallets = await tonConnect.getWallets();
+                if (wallets.length === 0) {
+                    alert('No wallets available');
+                    return;
+                }
+                
                 // Подключение кошелька
-                await tonConnect.connectWallet();
+                const selectedWallet = wallets[0]; // Вы можете реализовать выбор кошелька пользователем
+                await tonConnect.connectWallet({ bridgeUrl: selectedWallet.bridgeUrl, universalLink: selectedWallet.universalLink });
 
                 // Адрес вашего кошелька для перевода
                 const myWalletAddress = 'EQDc...ваш_адрес_кошелька';
