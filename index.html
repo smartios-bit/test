@@ -3,34 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-    <script type="module">
-        import { TonConnect } from "https://unpkg.com/@tonconnect/sdk@latest";
-
-        const tonConnect = new TonConnect();
-
-        async function sendTransaction() {
-            console.log('Функция sendTransaction доступна');
-            try {
-                const connectedWallet = await tonConnect.connect();
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [{
-                        amount: '100000000',
-                        recipient: 'UQDtYrCmts12HSgoJhw7SYBlQiRAIR9rgn6CcE27grNXyMOv'
-                    }]
-                };
-                const result = await connectedWallet.sendTransaction(transaction);
-                console.log('Транзакция успешно отправлена:', result);
-            } catch (error) {
-                console.error('Ошибка подключения или отправки транзакции:', error);
-            }
-        }
-
-        window.sendTransaction = sendTransaction;
-    </script>
+    <title>Ton Connect Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest"></script>
 </head>
 <body>
-    <button id="button1" onclick="sendTransaction()">На кофе :3</button>
+    <h1>Ton Connect Example</h1>
+    <button id="connectButton">Connect Wallet</button>
+
+    <script>
+        // Инициализация TonConnect SDK
+        const tonConnect = new TonConnect();
+
+        const connectButton = document.getElementById('connectButton');
+
+        connectButton.addEventListener('click', async () => {
+            try {
+                // Подключение кошелька
+                await tonConnect.connectWallet();
+
+                // Адрес вашего кошелька для перевода
+                const myWalletAddress = 'EQDc...ваш_адрес_кошелька';
+
+                // Формируем URL для Ton Keeper с информацией о переводе
+                const tonKeeperUrl = `https://app.tonkeeper.com/transfer/${myWalletAddress}?amount=1000000000`;
+                
+                // Открываем Ton Keeper для выполнения перевода
+                window.location.href = tonKeeperUrl;
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+            }
+        });
+    </script>
 </body>
 </html>
